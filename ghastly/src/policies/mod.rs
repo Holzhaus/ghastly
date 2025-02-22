@@ -17,11 +17,21 @@ pub type PolicyCheckFn = fn(workflow: &Workflow) -> Vec<PolicyViolation>;
 pub struct Policy {
     pub name: &'static str,
     check_fn: PolicyCheckFn,
+    pub doc: Option<&'static str>,
 }
 
 impl Policy {
     pub const fn new(name: &'static str, check_fn: PolicyCheckFn) -> Self {
-        Self { name, check_fn }
+        Self {
+            name,
+            check_fn,
+            doc: None,
+        }
+    }
+
+    pub const fn with_doc(mut self, doc: &'static str) -> Self {
+        self.doc = Some(doc);
+        self
     }
 
     #[inline]
