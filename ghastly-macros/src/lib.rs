@@ -20,7 +20,7 @@ pub fn policy(_args: TokenStream, input: TokenStream) -> TokenStream {
         #item_fn
 
         inventory::submit! {
-           Policy::new(#policy_name, #ident)
+           crate::Policy::new(#policy_name, #ident)
         }
     )
     .into()
