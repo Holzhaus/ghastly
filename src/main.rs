@@ -6,6 +6,31 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-fn main() {
-    println!("Hello, world!");
+use clap::{Parser, Subcommand};
+use std::path::PathBuf;
+
+#[derive(Parser)]
+#[command(author, version, about)]
+#[command(propagate_version = true)]
+struct Args {
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// Check workflow file.
+    Check {
+        /// Workflow file to check.
+        #[arg(value_name = "FILE")]
+        path: PathBuf,
+    },
+}
+
+fn main() -> ghastly::Result<()> {
+    let args = Args::parse();
+
+    match &args.command {
+        Commands::Check { path } => ghastly::check_workflow(path),
+    }
 }
