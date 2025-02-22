@@ -25,6 +25,8 @@ enum Commands {
         #[arg(value_name = "FILE")]
         path: PathBuf,
     },
+    /// List policies.
+    List,
 }
 
 fn main() -> ghastly::Result<()> {
@@ -32,5 +34,11 @@ fn main() -> ghastly::Result<()> {
 
     match &args.command {
         Commands::Check { path } => ghastly::check_workflow(path),
+        Commands::List => {
+            ghastly::get_policies().for_each(|policy| {
+                println!("{}", policy.name);
+            });
+            Ok(())
+        }
     }
 }
