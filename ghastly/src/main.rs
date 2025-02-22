@@ -8,6 +8,7 @@
 
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
+use termimad::{Alignment, MadSkin};
 
 #[derive(Parser)]
 #[command(author, version, about)]
@@ -27,6 +28,11 @@ enum Commands {
     },
     /// List policies.
     List,
+    /// Show information about a policy.
+    Show {
+        /// Policy Name
+        name: String,
+    },
 }
 
 fn main() -> ghastly::Result<()> {
@@ -38,6 +44,23 @@ fn main() -> ghastly::Result<()> {
             ghastly::get_policies().for_each(|policy| {
                 println!("{}", policy.name);
             });
+            Ok(())
+        }
+        Commands::Show { name } => {
+            if let Some(policy) = ghastly::get_policies().find(|policy| policy.name == name) {
+                if let Some(doc) = policy.doc {
+                    let mut skin = MadSkin::default();
+                    skin.headers.iter_mut().for_each(|line_style| {
+                        line_style.align = Alignment::Left;
+                    });
+
+                    skin.print_text(doc);
+                } else {
+                    eprintln!("Policy {} has not documentation", policy.name);
+                }
+            } else {
+                eprintln!("Policy {} not found", name);
+            };
             Ok(())
         }
     }
