@@ -7,8 +7,9 @@
 // SPDX-License-Identifier: MPL-2.0
 
 use crate::parse::Workflow;
-use ghastly_macros::policy;
 use marked_yaml::Span;
+
+mod permissions;
 
 pub type PolicyCheckFn = fn(workflow: &Workflow) -> Vec<PolicyViolation>;
 
@@ -86,9 +87,4 @@ inventory::collect!(Policy);
 
 pub fn get_policies() -> impl Iterator<Item = &'static Policy> {
     inventory::iter::<Policy>.into_iter()
-}
-
-#[policy]
-pub fn foobar(_workflow: &Workflow) -> Vec<PolicyViolation> {
-    vec![]
 }
