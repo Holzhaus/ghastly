@@ -15,15 +15,12 @@ mod policies;
 
 pub use error::GhastlyError as Error;
 pub use error::GhastlyResult as Result;
-pub use policies::{get_policies, Policy};
+pub use policies::{get_policies, Policy, PolicyCheckOutput};
 
-pub fn check_workflow(path: impl AsRef<Path>) -> Result<()> {
+pub fn check_workflow(path: impl AsRef<Path>) -> Result<Vec<PolicyCheckOutput<'static>>> {
     let mut file = File::open(path)?;
     let workflow = parse::parse_workflow(&mut file)?;
-    get_policies()
+    Ok(get_policies()
         .map(|policy| policy.check(&workflow))
-        .for_each(|output| {
-            dbg!(&output);
-        });
-    Ok(())
+        .collect())
 }

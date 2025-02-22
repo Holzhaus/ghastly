@@ -39,7 +39,46 @@ fn main() -> ghastly::Result<()> {
     let args = Args::parse();
 
     match &args.command {
-        Commands::Check { path } => ghastly::check_workflow(path),
+        Commands::Check { path } => {
+            let output = ghastly::check_workflow(path)?;
+            let mut policy_violations: Vec<_> = output
+                .iter()
+                .flat_map(|policy_output| {
+                    policy_output
+                        .violations()
+                        .iter()
+                        .map(|violation| (policy_output.policy(), violation))
+                })
+                .collect();
+            policy_violations.sort_by_key(|(_policy, violation)| {
+                violation
+                    .source()
+                    .start()
+                    .map(|marker| (marker.line(), marker.column()))
+                    .unwrap_or_default()
+            });
+            policy_violations
+                .into_iter()
+                .for_each(|(policy, violation)| {
+                    let line = violation
+                        .source()
+                        .start()
+                        .map(|marker| marker.line())
+                        .unwrap_or_default();
+                    let column = violation
+                        .source()
+                        .start()
+                        .map(|marker| marker.column())
+                        .unwrap_or_default();
+                    println!(
+                        "{path}:{line}:{column}:{message} ({policy_name})",
+                        path = path.display(),
+                        message = violation.message(),
+                        policy_name = policy.name
+                    );
+                });
+            Ok(())
+        }
         Commands::List => {
             ghastly::get_policies().for_each(|policy| {
                 println!("{}", policy.name);
