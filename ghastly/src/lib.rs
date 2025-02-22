@@ -9,13 +9,13 @@
 use std::fs::File;
 use std::path::Path;
 
-mod checks;
 mod error;
 mod parse;
+mod policies;
 
-pub use checks::{get_policies, Policy};
 pub use error::GhastlyError as Error;
 pub use error::GhastlyResult as Result;
+pub use policies::{get_policies, Policy};
 
 pub fn check_workflow(path: impl AsRef<Path>) -> Result<()> {
     let mut file = File::open(path)?;
