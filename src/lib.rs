@@ -13,12 +13,17 @@ mod checks;
 mod error;
 mod parse;
 
+pub use checks::get_policies;
 pub use error::GhastlyError as Error;
 pub use error::GhastlyResult as Result;
 
 pub fn check_workflow(path: &Path) -> Result<()> {
     let mut file = File::open(path)?;
     let workflow = parse::parse_workflow(&mut file)?;
-    dbg!(&workflow);
+    get_policies()
+        .map(|policy| policy.check(&workflow))
+        .for_each(|output| {
+            dbg!(&output);
+        });
     Ok(())
 }
