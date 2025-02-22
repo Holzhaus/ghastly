@@ -17,7 +17,7 @@ pub use checks::get_policies;
 pub use error::GhastlyError as Error;
 pub use error::GhastlyResult as Result;
 
-pub fn check_workflow(path: &Path) -> Result<()> {
+pub fn check_workflow(path: impl AsRef<Path>) -> Result<()> {
     let mut file = File::open(path)?;
     let workflow = parse::parse_workflow(&mut file)?;
     get_policies()
