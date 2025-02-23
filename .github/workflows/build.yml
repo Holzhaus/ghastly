@@ -6,6 +6,9 @@ on:
     pull_request:
     workflow_dispatch:
 
+env:
+    CRATE_NAME: ghastly
+
 jobs:
     cargo-toml-features:
         name: Generate Feature Combinations
@@ -33,7 +36,7 @@ jobs:
             - name: Print Rust version
               run: rustc -vV
             - name: Build Package
-              run: cargo publish --dry-run --locked --no-default-features --features "${CRATE_FEATURES}"
+              run: cargo publish --dry-run --package "${CRATE_NAME}" --locked --no-default-features --features "${CRATE_FEATURES}"
             - name: Run Tests
               run: cargo test --locked --no-default-features --features "${CRATE_FEATURES}"
             - name: Run Benchmark
@@ -49,6 +52,6 @@ jobs:
             - name: Check out repository
               uses: actions/checkout@v4
             - name: Publish Package
-              run: cargo publish --locked
+              run: cargo publish --locked --package "${CRATE_NAME}"
               env:
                   CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
