@@ -10,16 +10,17 @@ use std::fs::File;
 use std::path::Path;
 
 mod error;
-mod parse;
+mod parser;
 mod policies;
 
 pub use error::GhastlyError as Error;
 pub use error::GhastlyResult as Result;
+use parser::workflow::Workflow;
 pub use policies::{get_policies, Policy, PolicyCheckOutput};
 
 pub fn check_workflow(path: impl AsRef<Path>) -> Result<Vec<PolicyCheckOutput<'static>>> {
     let mut file = File::open(path)?;
-    let workflow = parse::parse_workflow(&mut file)?;
+    let workflow = Workflow::from_reader(&mut file)?;
     Ok(get_policies()
         .map(|policy| policy.check(&workflow))
         .collect())

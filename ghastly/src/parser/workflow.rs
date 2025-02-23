@@ -55,6 +55,19 @@ pub struct Workflow {
     pub jobs: Spanned<Map<Job>>,
 }
 
+impl Workflow {
+    /// Parse a workflow from the given reader.
+    pub fn from_reader<R>(reader: &mut R) -> crate::Result<Workflow>
+    where
+        R: Read,
+    {
+        let mut buffer = String::new();
+        reader.read_to_string(&mut buffer)?;
+        let workflow: Workflow = marked_yaml::from_yaml(0, &buffer)?;
+        Ok(workflow)
+    }
+}
+
 /// Token Permission Settings
 #[allow(dead_code)]
 #[derive(Deserialize, Debug)]
@@ -276,15 +289,4 @@ pub struct Step {
     pub env: Option<Spanned<StringMap>>,
     //pub continue_on_error: Option<Spanned<ContinueOnError>>,
     //pub timeout_minutes: Option<Spanned<Timeout>>,
-}
-
-/// Parse a workflow from the given reader.
-pub fn parse_workflow<R>(reader: &mut R) -> crate::Result<Workflow>
-where
-    R: Read,
-{
-    let mut buffer = String::new();
-    reader.read_to_string(&mut buffer)?;
-    let workflow: Workflow = marked_yaml::from_yaml(0, &buffer)?;
-    Ok(workflow)
 }

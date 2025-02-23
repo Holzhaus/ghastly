@@ -6,7 +6,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-use crate::parse::Workflow;
+use crate::parser::workflow::Workflow;
 use marked_yaml::Span;
 
 mod permissions;

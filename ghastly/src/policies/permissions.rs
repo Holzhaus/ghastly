@@ -7,7 +7,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 use super::PolicyViolation;
-use crate::parse::{PermissionLevel, Permissions, Workflow};
+use crate::parser::workflow::{PermissionLevel, Permissions, Workflow};
 use ghastly_macros::policy;
 use std::ops::Deref;
 
