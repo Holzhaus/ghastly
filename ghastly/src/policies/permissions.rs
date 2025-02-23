@@ -12,7 +12,7 @@ use ghastly_macros::policy;
 use std::ops::Deref;
 
 #[policy]
-/// Check that no Jobs are using `read-all` or `write-all` permissions for the `GITHUB_TOKEN`.
+/// No job should use the `read-all` or `write-all` permissions for the `GITHUB_TOKEN`.
 ///
 /// Permissions that are unnecessarily broad violate the principle of least privilege.
 ///
@@ -106,7 +106,7 @@ pub fn no_all_permissions(workflow: &Workflow) -> Vec<PolicyViolation> {
 }
 
 #[policy]
-/// Check that every job sets individual permissions for the `GITHUB_TOKEN`.
+/// Every job should set individual permissions for the `GITHUB_TOKEN`.
 ///
 /// Permissions that are unnecessarily broad violate the principle of least privilege. Hence, every
 /// job should specify only the permissions actually needed to perform its tasks by setting the
