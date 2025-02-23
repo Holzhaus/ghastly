@@ -55,8 +55,9 @@ pub enum TokenKind {
 pub fn tokenize(text: &str) -> impl Iterator<Item = Token<'_>> + '_ {
     let mut remainder = text;
     let mut current_token_kind = TokenKind::String;
+    let mut eof_found = false;
     std::iter::from_fn(move || {
-        if remainder.is_empty() {
+        if eof_found {
             return None;
         }
 
@@ -72,6 +73,7 @@ pub fn tokenize(text: &str) -> impl Iterator<Item = Token<'_>> + '_ {
                     // Missing end of expression. Should we fail here?
                     let value = Token::expression(remainder);
                     remainder = "";
+                    eof_found = true;
                     Some(value)
                 }
             }
@@ -87,6 +89,7 @@ pub fn tokenize(text: &str) -> impl Iterator<Item = Token<'_>> + '_ {
                     // EOF encountered when looking for start of expression.
                     let value = Token::string(remainder);
                     remainder = "";
+                    eof_found = true;
                     Some(value)
                 }
             }
