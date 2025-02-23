@@ -97,38 +97,131 @@ impl FromStr for Permissions {
 #[derive(Deserialize, Debug)]
 pub struct PermissionEvent {
     /// Work with GitHub Actions.
-    pub actions: Option<PermissionLevel>,
+    actions: Option<PermissionLevel>,
     /// Work with artifact attestations.
-    pub attestations: Option<PermissionLevel>,
+    attestations: Option<PermissionLevel>,
     /// Work with check runs and check suites.
-    pub checks: Option<PermissionLevel>,
+    checks: Option<PermissionLevel>,
     /// Work with check runs and check suites.
-    pub contents: PermissionLevel,
+    contents: Option<PermissionLevel>,
     /// Work with deployments.
-    pub deployments: Option<PermissionLevel>,
+    deployments: Option<PermissionLevel>,
     /// Work with GitHub Discussions.
-    pub discussions: Option<PermissionLevel>,
+    discussions: Option<PermissionLevel>,
     /// Fetch an OpenID Connect (OIDC) token.
-    pub id_token: Option<PermissionLevel>,
+    id_token: Option<PermissionLevel>,
     /// Work with issues.
-    pub issues: Option<PermissionLevel>,
+    issues: Option<PermissionLevel>,
     /// Work with GitHub Packages.
-    pub packages: Option<PermissionLevel>,
+    packages: Option<PermissionLevel>,
     /// Work with GitHub Pages.
-    pub pages: Option<PermissionLevel>,
+    pages: Option<PermissionLevel>,
     /// Work with pull requests.
-    pub pull_requests: Option<PermissionLevel>,
+    pull_requests: Option<PermissionLevel>,
     /// Work with GitHub projects (classic).
-    pub repository_projects: Option<PermissionLevel>,
+    repository_projects: Option<PermissionLevel>,
     /// Work with GitHub code scanning and Dependabot alerts.
-    pub security_events: Option<PermissionLevel>,
+    security_events: Option<PermissionLevel>,
     /// Work with commit statuses.
-    pub statuses: Option<PermissionLevel>,
+    statuses: Option<PermissionLevel>,
+}
+
+impl PermissionEvent {
+    /// Work with GitHub Actions.
+    pub fn actions(&self) -> PermissionLevel {
+        self.actions.unwrap_or_default()
+    }
+
+    /// Work with artifact attestations.
+    pub fn attestations(&self) -> PermissionLevel {
+        self.attestations.unwrap_or_default()
+    }
+
+    /// Work with check runs and check suites.
+    pub fn checks(&self) -> PermissionLevel {
+        self.checks.unwrap_or_default()
+    }
+
+    /// Work with check runs and check suites.
+    pub fn contents(&self) -> PermissionLevel {
+        self.contents.unwrap_or_default()
+    }
+
+    /// Work with deployments.
+    pub fn deployments(&self) -> PermissionLevel {
+        self.deployments.unwrap_or_default()
+    }
+
+    /// Work with GitHub Discussions.
+    pub fn discussions(&self) -> PermissionLevel {
+        self.discussions.unwrap_or_default()
+    }
+
+    /// Fetch an OpenID Connect (OIDC) token.
+    pub fn id_token(&self) -> PermissionLevel {
+        self.id_token.unwrap_or_default()
+    }
+
+    /// Work with issues.
+    pub fn issues(&self) -> PermissionLevel {
+        self.issues.unwrap_or_default()
+    }
+
+    /// Work with GitHub Packages.
+    pub fn packages(&self) -> PermissionLevel {
+        self.packages.unwrap_or_default()
+    }
+
+    /// Work with GitHub Pages.
+    pub fn pages(&self) -> PermissionLevel {
+        self.pages.unwrap_or_default()
+    }
+
+    /// Work with pull requests.
+    pub fn pull_requests(&self) -> PermissionLevel {
+        self.pull_requests.unwrap_or_default()
+    }
+
+    /// Work with GitHub projects (classic).
+    pub fn repository_projects(&self) -> PermissionLevel {
+        self.repository_projects.unwrap_or_default()
+    }
+
+    /// Work with GitHub code scanning and Dependabot alerts.
+    pub fn security_events(&self) -> PermissionLevel {
+        self.security_events.unwrap_or_default()
+    }
+
+    /// Work with commit statuses.
+    pub fn statuses(&self) -> PermissionLevel {
+        self.statuses.unwrap_or_default()
+    }
+
+    /// Iterates over all permissions.
+    pub fn iter(&self) -> impl Iterator<Item = (&'static str, PermissionLevel)> {
+        [
+            ("actions", self.actions()),
+            ("attestations", self.attestations()),
+            ("checks", self.checks()),
+            ("contents", self.contents()),
+            ("deployments", self.deployments()),
+            ("discussions", self.discussions()),
+            ("id_token", self.id_token()),
+            ("issues", self.issues()),
+            ("packages", self.packages()),
+            ("pages", self.pages()),
+            ("pull_requests", self.pull_requests()),
+            ("repository_projects", self.repository_projects()),
+            ("security_events", self.security_events()),
+            ("statuses", self.statuses()),
+        ]
+        .into_iter()
+    }
 }
 
 /// Work with commit statuses.
 #[allow(dead_code)]
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Default, Clone, Copy, PartialEq, Eq)]
 #[serde(rename_all = "kebab-case")]
 pub enum PermissionLevel {
     /// Read permission.
@@ -136,6 +229,7 @@ pub enum PermissionLevel {
     /// Write permission (includes read permission).
     Write,
     /// No permission.
+    #[default]
     None,
 }
 
