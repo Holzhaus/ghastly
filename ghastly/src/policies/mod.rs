@@ -9,6 +9,7 @@
 use crate::parser::workflow::Workflow;
 use marked_yaml::Span;
 
+mod expressions;
 mod permissions;
 
 pub type PolicyCheckFn = fn(workflow: &Workflow) -> Vec<PolicyViolation>;
